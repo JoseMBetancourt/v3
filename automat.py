@@ -79,10 +79,12 @@ def graficar(direccion):
 				scores_q.pop(i)
 				labels_q.pop(i)
 				explode.pop(i) 
-
-		plt.pie(scores_q, labels=labels_q,explode=explode, autopct= lambda p: '{:.2f}% ({:.0f})'.format(p,(p/100)*sum(scores_q), shadow=True, startangle=90,colors=colors))
+				
+		total = sum(scores_q)
+		plt.pie(scores_q, labels=labels_q,explode=explode, autopct= lambda p: '{:.2f}% ({:.0f})'.format(p,(p/100)*total, shadow=True, startangle=90,colors=colors))
 		plt.title('Estadisticas de Vulnerabilidades (TOTAL: '+str(sum(scores_q))+')')
 		plt.savefig(direccion+'.png')
+		plt.close()
 
 
 
@@ -124,7 +126,7 @@ while True:
 	procesos = input("Ingrese consecutivamente las letras de los escaneos a realizar (ex: ade): ")
 	
 	if not procesos:
-		procesos = 'abcdef'
+		procesos = 'abcdefg'
 	
 	if ('a' in procesos) or validar_opciones():
 		while True:
@@ -168,7 +170,7 @@ if validar_opciones():
 
 		if 'c' in procesos:
 			print('\n____________________________\n\nESCANEO TCP DE: '+item_of_targets['Nombre']+'\n____________________________')
-			subprocess.call('sudo nmap -sS --top-ports 10000 -v '+item_of_targets['Ip']+' -oN ./'+carpeta+'/'+target_folder_name+'/escaneo-tcp'  , shell=True)
+			subprocess.call('sudo nmap -sS --top-ports 30000 -v '+item_of_targets['Ip']+' -oN ./'+carpeta+'/'+target_folder_name+'/escaneo-tcp'  , shell=True)
 
 		if 'd' in procesos:
 			print('\n____________________________\n\nSISTEMA OPERATIVO Y SERVICIOS EN PUERTOS DE: '+item_of_targets['Nombre']+'\n____________________________')
