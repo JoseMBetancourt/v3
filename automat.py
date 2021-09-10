@@ -50,18 +50,25 @@ def graficar(direccion):
 	labels_q=['Baja','Media','Alta','Critica']
 	scores_q=[0,0,0,0]
 	explode = [0, 0, 0.1, 0.15]
-	colors=['#198754','#ffc107','#fd7e14','#dc3545']
+	colors=['#fd7e14','#198754','#ffc107','#dc3545']
+	j=int(0)
+
+	subprocess.call('cp ' +direccion+' '+direccion+'_only_refs.txt', shell=True)
 
 	archivo = open(direccion,'r')
 	lineas = archivo.readlines()
 	archivo.close()
 
+	archivo = open(direccion+'_only_refs.txt','w')
+
 	for linea in lineas:
-		if("|     	" in linea):
+		if(("|_    	" in linea) or ("|     	" in linea)):
 			linea=linea.split('\t')
 			scores.append(linea[2])
-			scores=[float(i) for i in scores]
+			archivo.write(str(linea[1])+'\n')	
+	archivo.close()
 
+	scores=[float(i) for i in scores]
 
 	if len(scores) > 1:
 		for i in scores:
@@ -74,11 +81,16 @@ def graficar(direccion):
 			elif (i>=9.0) and (i<=10.0): 
 				scores_q[3]+=1
 
-		for i in range(0,len(scores_q)-1):
-			if scores_q[i] == 0: 
-				scores_q.pop(i)
-				labels_q.pop(i)
-				explode.pop(i) 
+		
+		while j <= len(scores_q)-1:
+
+			if scores_q[j] == 0: 
+				scores_q.pop(j)
+				labels_q.pop(j)
+				explode.pop(j) 
+			else:
+				j+=1
+
 				
 		total = sum(scores_q)
 		plt.pie(scores_q, labels=labels_q,explode=explode, autopct= lambda p: '{:.2f}% ({:.0f})'.format(p,(p/100)*total, shadow=True, startangle=90,colors=colors))
